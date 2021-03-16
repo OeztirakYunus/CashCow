@@ -12,8 +12,5 @@ namespace CashCow.Contracts.Persistence
     {
         [ContractPropertyInfo(Required = true, MaxLength = 256)]
         public string Name { get; set; }
-
-        [ContractPropertyInfo(Required = true, MaxLength = 256)]
-        public double Paid { get; set; }
     }
 }

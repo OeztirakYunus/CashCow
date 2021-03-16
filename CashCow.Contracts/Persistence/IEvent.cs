@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace CashCow.Contracts.Persistence
 {
-    public interface IEvent
+    public interface IEvent : ICopyable<IEvent>, IVersionable
     {
         [ContractPropertyInfo(Required = true, MaxLength = 256)]
-        public string Titel { get; set; }
+        public string Title { get; set; }
         [ContractPropertyInfo(Required = false, MaxLength = 256)]
         public string Description { get; set; }
-        public Category Category { get; set; }
-        public Currency Currency { get; set; }
+        public string Category { get; set; }
+        public string Currency { get; set; }
         public List<IUser> User { get; set; }
     }
 }
