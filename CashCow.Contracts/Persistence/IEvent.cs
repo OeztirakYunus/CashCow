@@ -1,5 +1,4 @@
-﻿using CashCow.Contracts.Modules.Common;
-using CommonBase.Attributes;
+﻿using CommonBase.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
