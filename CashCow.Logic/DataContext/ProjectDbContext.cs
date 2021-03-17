@@ -11,18 +11,36 @@ using System.Threading.Tasks;
 
 namespace CashCow.Logic.DataContext
 {
-    internal class ProjectDbContext : DbContext, IContext
+    internal partial class ProjectDbContext : DbContext, IContext
     {
+		static ProjectDbContext()
+        {
+			ClassConstructing();
+			ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Database=CashCowDb;Integrated Security=True";
+			ClassConstructed();
+        }
+		static partial void ClassConstructing();
+		static partial void ClassConstructed();
 		public ProjectDbContext()
 		{
+			Constructing();
+			Constructed();
 		}
+
+		partial void Constructing();
+		partial void Constructed();
+
+		public static string ConnectionString { get; protected set; }
 
 		public DbSet<E> Set<C, E>()
 			where C : IIdentifiable
 			where E : Identity, C
 		{
-			throw new NotImplementedException();
+			object result = null;
+			GetDbSet<C, E>(ref result);
+			return result as DbSet<E>;
 		}
+		partial void GetDbSet<C, E>(ref object dbset);
 
 		public Task<int> CountAsync<C, E>()
 			where C : IIdentifiable
@@ -96,5 +114,34 @@ namespace CashCow.Logic.DataContext
 		{
 			return SaveChangesAsync();
 		}
-	}
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+			bool handled = false;
+			BeforeOnConfiguring(optionsBuilder, ref handled);
+			if(handled == false)
+            {
+				optionsBuilder.UseSqlServer(ConnectionString);
+			}
+			AfterOnConfiguring(optionsBuilder);
+			base.OnConfiguring(optionsBuilder);
+		}
+
+		partial void BeforeOnConfiguring(DbContextOptionsBuilder optionsBuilder, ref bool handled);
+		partial void AfterOnConfiguring(DbContextOptionsBuilder optionsBuilder);
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+			bool handled = false;
+			BeforeOnModelCreating(modelBuilder, ref handled);
+			if(handled == false)
+            {
+
+            }
+			AfterOnModelCreating(modelBuilder);
+			base.OnModelCreating(modelBuilder);
+		}
+		partial void BeforeOnModelCreating(ModelBuilder modelBuilder, ref bool handled);
+		partial void AfterOnModelCreating(ModelBuilder modelBuilder);
+    }
 }
